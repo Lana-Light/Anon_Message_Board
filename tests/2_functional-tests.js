@@ -6,16 +6,16 @@
 *       (if additional are added, keep them at the very end!)
 */
 
-var chaiHttp = require('chai-http');
-var chai = require('chai');
-var assert = chai.assert;
-var server = require('../server');
+const chaiHttp = require('chai-http');
+const chai = require('chai');
+const assert = chai.assert;
+const server = require('../server');
 
 chai.use(chaiHttp);
-var id1;
-var id2;
-var id3;
-var id4;
+let id1;
+let id2;
+let id3;
+let id4;
 
 suite('Functional Tests', function() {
 
@@ -191,7 +191,7 @@ suite('Functional Tests', function() {
        chai.request(server)
         .get('/api/replies/test')
         .query({thread_id: id1})
-        .end(function(err, res) {console.log(res.body.replies[1]);
+        .end(function(err, res) {
           assert.equal(res.status, 200);
           id3 = res.body.replies[0]._id;
           id4 = res.body.replies[1]._id;
@@ -270,6 +270,21 @@ suite('Functional Tests', function() {
       }); 
     });
     
+    after(async function() {
+      await chai.request(server)
+      .delete('/api/replies/test')
+      .send({
+        thread_id: id1,
+        reply_id: id4,
+        delete_password: 'd'
+      });
+      await chai.request(server)
+      .delete('/api/threads/test')
+      .send({
+        thread_id: id1,
+        delete_password: 'a'
+      });
+    });
   });
 
 });
